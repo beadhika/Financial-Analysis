@@ -1,0 +1,95 @@
+---
+title: "Groups"
+author: "Benjan"
+date: "7/8/2022"
+output: pdf_document
+---
+```{r}
+library(readxl)
+financial <- read_excel("July 3.2022.xlsx")
+library(tidyverse)
+fin <- arrange(financial,desc(Value))
+
+```
+
+# 1. Overall Approach
+
+## Entity selection
+
+First of all, we want to remove company that are doing bad in their operations. We will also want to remove companies that have a weak foundation, that is who might not have enough cash to pay their near term liabilities. As there are chances of recession, this is critical as we only want companies that can come out of this situation. 
+
+
+```{r}
+subset <- fin %>%
+    filter(fin["Net Income"]>=0,fin["Net Cash Flow"]>=0,
+               fin["Quick Ratio(CA/CL)"]>=0,!is.na(Value))
+
+```
+
+## Comparison 
+
+Now, as we have removed companies that satisy certain attributes, we do not need to view these attributes in our table. So, we will only select the other necessary columns. 
+```{r}
+sub1 <- select(subset,Stocks,Value,SUM,Area)
+head(sub1)
+```
+
+Here, we will arrange the cleaned dataframe in order of their descending values and select stocks by looking at their "SUM" and "Value". 
+Similarly, we will group these by Area as we want to diversify our selection. 
+
+```{r}
+sub2 <- group_by(sub1,Area)
+group_split(sub2)
+group_keys(sub2)
+```
+
+## Candidates 
+Looking at the grouped_table, we have the following candidates: F, TCEHY, BABA, AMD, TSM, C, COIN, MRNA, PFE, SHEL, ET, META, GOOGL, ZIM. 
+
+We'll look at the 'Other Informations' column. 
+
+```{r}
+final <- fin %>%
+    filter(Stocks %in% c("F","TCEHY","BABA","AMD","TSM","C","COIN","MRNA","PFE","SHEL","ET","META","GOOGL","ZIM")) %>%
+    select(Stocks, `Other Informations`)
+final
+
+```
+
+We can select stocks to buy from the refined list after considering the details given in the 'Other Informations' column. 
+
+# 2.Value Approach
+While refining the data, we selected the stocks with good overall financials. We could have dropped stocks which were undervalued but had bad financial situation in one attribute. So, here we will filter and look at those stocks that might have great value. 
+
+```{r}
+sub3 <- fin %>%
+    filter(Value >= 5) %>%
+    select(Stocks,Value,SUM,PB,Area)
+```
+Let's only filter the stocks that were not in the final refined data of first part. 
+```{r}
+sub4 <- filter(sub3,!(Stocks %in% final$Stocks))
+sub4
+```
+
+# 3. Utility approach
+
+```{r}
+sub5 <- fin %>%
+    filter(SUM >= 7) %>%
+    select(Stocks,Value,SUM,PB,Area)
+```
+
+```{r}
+sub6 <- filter (sub5,!(Stocks %in% final$Stocks | Stocks %in% sub4$Stocks))
+
+sub6
+```
+
+# 4. Elimination
+```{r}
+sub7 <- fin %>%
+    filter(is.na(PB) | Value <= 1/10 | PB >=10)
+sub7[,c("Stocks","Value","SUM","PB")]
+```
+

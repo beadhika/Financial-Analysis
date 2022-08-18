@@ -1,0 +1,26 @@
+library(readxl)
+fin <- read_excel("July 3.2022.xlsx")
+View(July_3_2022)
+library(tidyverse)
+names(fin)
+subset <- select(fin,"Stocks...1","Net Income","SUM","PE","Net Cash Flow","Debt/Equity","Quick Ratio(CA/CL)")
+sub1 <- filter(subset,subset["Debt/Equity"] >= 0,subset["Net Income"]>=0,subset["Net Cash Flow"]>=0,
+               subset["Quick Ratio(CA/CL)"]>=0)
+sub2 <- filter(sub1,sub1["PE"]<15)
+sub2
+
+sub3 <- select(subset,-("Stocks...1"))
+cor(sub3)
+
+install.packages("tidyverse")
+
+
+sub1 <- filter(subset,subset["Debt/Equity"] >= 0,subset["Net Income"]>=0,subset["Net Cash Flow"]>=0,
+               subset["Quick Ratio(CA/CL)"]>=0, !is.na(Value))
+
+is.na(subset$Value)
+
+pnorm(0.53)
+1-pnorm(1.42)
+pnorm(-0.5)
+pnorm(1.42)-pnorm(-0.5)

@@ -1,0 +1,30 @@
+
+library(readxl)
+financial <- read_excel("July 3.2022.xlsx")
+library(tidyverse)
+fin <- arrange(financial,desc(Value))
+
+subset <- fin %>%
+    filter(fin["Net Income"]>=0,fin["Net Cash Flow"]>=0,
+           fin["Quick Ratio(CA/CL)"]>=0,!is.na(Value))
+
+sub1 <- select(subset,"Stocks...1","Value","SUM","Area")
+head(sub1)
+
+sub2 <- group_by(sub1,Area)
+group_split(sub2)
+group_keys(sub2)
+
+final <- fin %>%
+    filter(Stocks...1 %in% c("F","TCEHY","BABA","AMD","TSM","C","COIN","MRNA","PFE","SHEL","ET","META","GOOGL","ZIM")) %>%
+    select(Stocks...1, `Other Informations`)
+
+sub3 <- fin %>%
+    filter(Value >= 20 | PB <= 1 | SUM >= 7) %>%
+    select('Stocks...1','Value','SUM','PB')
+sub3[,sub3$Stocks...1 != final$Stocks..1 ]
+final
+sub3$Stocks...1[sub3$Stocks...1 != final$Stocks...1]
+final$Stocks...1
+sub4 <- filter(sub3,Stocks...1 != final$Stocks...1)
+sub4

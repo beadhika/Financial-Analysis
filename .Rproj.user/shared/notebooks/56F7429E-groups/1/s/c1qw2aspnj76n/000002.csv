@@ -1,0 +1,3 @@
+"0","subset <- select(fin,""Stocks...1"",""Value"",""Net Income"",""SUM"",""Net Cash Flow"",""Debt/Equity"",""Quick Ratio(CA/CL)"",""Area"")"
+"0","sub1 <- filter(subset,subset[""Debt/Equity""] >= 0,subset[""Net Income""]>=0,subset[""Net Cash Flow""]>=0,"
+"0","               subset[""Quick Ratio(CA/CL)""]>=0,subset[""Value""]!=NA)"

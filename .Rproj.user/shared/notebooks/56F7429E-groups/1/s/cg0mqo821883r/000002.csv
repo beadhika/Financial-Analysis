@@ -1,0 +1,5 @@
+"0","
+sub4 <- arrange(fin,desc(Value))
+"
+"2","Error in arrange(fin, desc(Value)) : could not find function ""arrange""
+"
